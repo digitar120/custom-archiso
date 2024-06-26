@@ -1,3 +1,3 @@
-./archlive/airootfs/etc/shadow
-./out/*
-./workdir/*
+/archlive/airootfs/etc/shadow
+/out/
+/workdir/
