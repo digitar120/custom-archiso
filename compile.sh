@@ -1,0 +1,1 @@
+mkarchiso -L XFCE-ARCHISO -A XFCE-ARCHISO -P digitar120 -v -w workdir/ -o out/ archlive/

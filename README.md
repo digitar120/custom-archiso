@@ -8,4 +8,4 @@ Includes all graphics drivers, a stock XFCE desktop and a Firefox install.
 # To do
 - ~Desktop shortcuts for Clonezilla, GParted, Firefox and XFCE Terminal~
 - ~Set a nice wallpaper~
-- Choose appropriate metadata for the *mkarchiso* command
+- ~Choose appropriate metadata for the *mkarchiso* command~
