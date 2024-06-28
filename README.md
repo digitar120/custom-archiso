@@ -9,3 +9,5 @@ Includes all graphics drivers, a stock XFCE desktop and a Firefox install.
 - ~Desktop shortcuts for Clonezilla, GParted, Firefox and XFCE Terminal~
 - ~Set a nice wallpaper~
 - ~Choose appropriate metadata for the *mkarchiso* command~
+- Fix XDM not reading hostname
+- ~Default session for root in XDM (.xsession)~
