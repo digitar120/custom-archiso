@@ -1,4 +1,7 @@
+# Escritorio
 alsa-utils
+
+# Bajo nivel
 amd-ucode
 arch-install-scripts
 archinstall
@@ -10,11 +13,8 @@ bolt
 brltty
 broadcom-wl
 btrfs-progs
-clonezilla
 cloud-init
 cryptsetup
-darkhttpd
-ddrescue
 dhclient
 dhcpcd
 diffutils
@@ -63,8 +63,6 @@ man-db
 man-pages
 mc
 mdadm
-memtest86+
-memtest86+-efi
 mkinitcpio
 mkinitcpio-archiso
 mkinitcpio-nfs-utils
@@ -143,11 +141,6 @@ networkmanager
 network-manager-applet
 pipewire
 udftools
-fish
-xfce4
-xfce4-goodies
-w3m
-wget
 xdm-archlinux
 linux-lts
 jre-openjdk
@@ -159,6 +152,19 @@ gvfs-gphoto2
 gvfs-mtp
 gvfs-nfs
 gvfs-smb
+
+
+# Utilidades y escritorio
+clonezilla
+darkhttpd
+ddrescue
+memtest86+
+memtest86+-efi
+fish
+xfce4
+xfce4-goodies
+w3m
+wget
 gparted
 firefox
 blueman
