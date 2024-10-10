@@ -138,7 +138,6 @@ networkmanager
 network-manager-applet
 pipewire
 udftools
-xdm-archlinux
 linux-lts
 jre-openjdk
 gvfs
@@ -149,6 +148,9 @@ gvfs-gphoto2
 gvfs-mtp
 gvfs-nfs
 gvfs-smb
+gdm
+gnome
+gnome-extra
 
 
 # Utilidades y escritorio
@@ -179,3 +181,9 @@ arch-wiki-docs
 arch-wiki-lite
 alsa-utils
 rclone
+micro
+vlc
+dislocker
+acpica
+remmina
+xrdp
