@@ -6,3 +6,4 @@ Includes all graphics drivers and stock XFCE and GNOME desktops, plus an assortm
 # To do
 - Add procedure documentation for Clonezilla disk backups and Dislocker usage.
 - Set a default wallpaper.
+- Execute inside a Docker container (to avoid altering a working system and for more easily building an image)
