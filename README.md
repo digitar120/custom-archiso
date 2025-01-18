@@ -1,9 +1,9 @@
 # custom-archiso
 A custom Arch Linux ISO, thought out as a tool for system servicing/backups and easier Arch installs.
 
-Includes all graphics drivers and stock XFCE and GNOME desktops, plus an assortment of utilities.
+Includes all graphics drivers and stock XFCE, plus an assortment of utilities.
 
-# To do
-- Add procedure documentation for Clonezilla disk backups and Dislocker usage.
-- Set a default wallpaper.
-- Execute inside a Docker container (to avoid altering a working system and for more easily building an image)
+*Note: This script should be run inside a dedicated VM to prevent data loss in case `mkarchiso` gets interrupted (see [](https://wiki.archlinux.org/title/Archiso#Removal_of_work_directory))*
+
+# To Do / Issues
+- Files not copying to /root
