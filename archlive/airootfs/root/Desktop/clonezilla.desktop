@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=Clonezilla
-Exec=/usr/bin/clonezilla
-Icon=/usr/share/icons/clonezilla.jpg
-Comment=Clonezilla
-Type=Application
-Terminal=true

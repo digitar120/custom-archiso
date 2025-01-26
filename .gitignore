@@ -1,3 +1,6 @@
-/archlive/airootfs/etc/shadow
+/archlive/
 /out/
 /workdir/
+local-package-repository/
+packagelist
+*.log

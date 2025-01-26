@@ -17,29 +17,59 @@ echo "Copying base archiso profile"
 cp -r /usr/share/archiso/configs/releng/ archlive
 
 echo "Applying custom changes"
-cp -r airootfs-additions/* archlive/airootfs/
+set ROOT_DIR archlive/airootfs
+cp -r airootfs-additions/* $ROOT_DIR
+
+mkdir -p $ROOT_DIR/local-package-repository
+cp -r local-package-repository/* $ROOT_DIR/local-package-repository
+
+# Local repo, plus remote repos deactivated
+echo "[options]
+HoldPkg     = pacman glibc
+Architecture = auto
+ParallelDownloads = 5
+SigLevel    = Required DatabaseOptional
+LocalFileSigLevel = Optional
+
+# Disable the local repo before enabling the remote ones
+
+#[core]
+#Include = /etc/pacman.d/mirrorlist
+#[extra]
+#Include = /etc/pacmna.d/mirrorlist
+#[multilib]
+#Include = /etc/pacman.d/mirrorlist
+[local-package-repository]
+SigLevel = Optional TrustAll
+Server = file:///local-package-repository/" > archlive.pacman.conf
 
 cat package-list-additions >> archlive/packages.x86_64
-mkdir -p archlive/airootfs/home/$NORMAL_USER_USERNAME
-cp -r {package-list-additions,other-payloads} archlive/airootfs/{root,home/$NORMAL_USER_USERNAME}
 
-cat pacman-configuration-additions >> archlive/pacman.conf
+echo "
+
+Note: Remote repositories core and extra are disabled. You can enable them back up by editing '/etc/pacman.conf'." >> $ROOT_DIR/etc/motd
+
+mkdir -p $ROOT_DIR/{root/,home/$NORMAL_USER_USERNAME/}
+cp -r {package-list-additions,user-directory-payloads} $ROOT_DIR/{root/,home/$NORMAL_USER_USERNAME/}
+
 # Disable autologin
-rm archlive/airootfs/etc/systemd/system/getty@tty1.service.d/autologin.conf
+rm $ROOT_DIR/etc/systemd/system/getty@tty1.service.d/autologin.conf
 
 echo "Writing user data"
-echo "root:x:0:0:root:/root:/usr/bin/zsh" >> archlive/airootfs/etc/passwd
-echo "root:$ROOT_PASSWORD:14871::::::" >> archlive/airootfs/etc/shadow
+echo "root:x:0:0:root:/root:/usr/bin/zsh" >> $ROOT_DIR/etc/passwd
+echo "root:$ROOT_PASSWORD:14871::::::" >> $ROOT_DIR/etc/shadow
 
-echo "$NORMAL_USER_USERNAME:x:1000:1000::/home/$NORMAL_USER_USERNAME:/usr/bin/$NORMAL_USER_SHELL" >> archlive/airootfs/etc/passwd
+echo "$NORMAL_USER_USERNAME:x:1000:1000::/home/$NORMAL_USER_USERNAME:/usr/bin/$NORMAL_USER_SHELL" >> $ROOT_DIR/etc/passwd
 
-echo "$NORMAL_USER_USERNAME:$NORMAL_USER_PASSWORD:14871::::::" >> archlive/airootfs/etc/shadow
-mkdir archlive/airootfs/etc/sudoers.d
-echo "$NORMAL_USER_USERNAME ALL=(ALL:ALL) ALL" > archlive/airootfs/etc/sudoers.d/01_normaluser
+echo "$NORMAL_USER_USERNAME:$NORMAL_USER_PASSWORD:14871::::::" >> $ROOT_DIR/etc/shadow
+mkdir $ROOT_DIR/etc/sudoers.d
+echo "$NORMAL_USER_USERNAME ALL=(ALL:ALL) ALL" > $ROOT_DIR/etc/sudoers.d/01_normaluser
 
 echo "Begin compiling auxiliary package database"
-rm package-repository/package-repository*
-repo-add package-repository/package-repository.db.tar.zst package-repository/*
+rm local-package-repository/local-package-repository*
+
+# Fish does not support this type of wildcard
+bash -c "repo-add local-package-repository/local-package-repository.db.tar.zst local-package-repository/*[^sig]"
 
 echo "Creating working and output directories"
 mkdir -p workdir out

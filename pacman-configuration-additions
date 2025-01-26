@@ -1,8 +1,0 @@
-## CUSTOM
-## Local repository for AUR packages
-[package-repository]
-SigLevel = Optional TrustAll
-Server = file:///root/custom-archiso/package-repository/
-
-[multilib]
-Include = /etc/pacman.d/mirrorlist
