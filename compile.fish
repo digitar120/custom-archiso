@@ -1,7 +1,7 @@
 #!/bin/fish
 
 if not set -q argv[4]; or contains -- -h $argv[1]
-    echo -e "Note: This script should be executed in a private fish session, (\"fish --private\"), which avoids storing sensitive information in the history file.\nYou can also remove specific history entries with \"history delete --contains <string>\".\n\nUsage: compile.fish <root password> <non-root username> <non-root password> <non-root shell name>"
+    echo -e "Notes:\n\n- This script should be executed in a private fish session, (\"fish --private\"), which avoids storing sensitive information in the history file.\nYou can also remove specific history entries with \"history delete --contains <string>\".\n\n- If the build fails, use findmnt(8) to check if there are mount binds (see https://wiki.archlinux.org/title/Archiso#Removal_of_work_directory).\n\nUsage: compile.fish <root password> <non-root username> <non-root password> <non-root shell name>"
     exit
 end
 
@@ -23,7 +23,7 @@ cp -r airootfs-additions/* $ROOT_DIR
 mkdir -p $ROOT_DIR/local-package-repository
 cp -r local-package-repository/* $ROOT_DIR/local-package-repository
 
-# Local repo, plus remote repos deactivated
+# Pacman configuratiton to be saved in the image. Local repo, plus remote repos deactivated.
 echo "[options]
 HoldPkg     = pacman glibc
 Architecture = auto
@@ -41,7 +41,20 @@ LocalFileSigLevel = Optional
 #Include = /etc/pacman.d/mirrorlist
 [local-package-repository]
 SigLevel = Optional TrustAll
-Server = file:///local-package-repository/" > archlive.pacman.conf
+Server = file:///local-package-repository/" > $ROOT_DIR/etc/pacman.conf
+
+
+# Pacman configuration to be used by mkarchiso
+echo "[options]
+HoldPkg     = pacman glibc
+Architecture = auto
+ParallelDownloads = 5
+SigLevel    = Required DatabaseOptional
+LocalFileSigLevel = Optional
+
+[local-package-repository]
+SigLevel = Optional TrustAll
+Server = file:///root/custom-archiso/local-package-repository/" > archlive/pacman.conf
 
 cat package-list-additions >> archlive/packages.x86_64
 
