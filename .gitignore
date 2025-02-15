@@ -4,3 +4,5 @@ archlive/
 local-package-repository/
 packagelist
 *.log
+aurutils-pacman.conf
+user-directory-payloads/package-list-additions

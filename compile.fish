@@ -9,6 +9,7 @@ set ROOT_PASSWORD (echo $argv[1] | openssl passwd -6 -stdin)
 set NORMAL_USER_USERNAME $argv[2]
 set NORMAL_USER_PASSWORD (echo $argv[3] | openssl passwd -6 -stdin)
 set NORMAL_USER_SHELL $argv[4]
+set PACKAGE_DATABASE_PATH "/custom-archiso-packages"
 
 echo "Clearing working directories"
 rm -rf workdir archlive 
@@ -21,7 +22,15 @@ set ROOT_DIR archlive/airootfs
 cp -r airootfs-additions/* $ROOT_DIR
 
 mkdir -p $ROOT_DIR/local-package-repository
-cp -r local-package-repository/* $ROOT_DIR/local-package-repository
+
+# Test if the database directory exists
+
+if not test -d /custom-archiso-packages
+    echo "Package directory does not exist. Run download.fish first."    
+    exit
+end
+
+cp -r $PACKAGE_DATABASE_PATH/* $ROOT_DIR/local-package-repository
 
 # Pacman configuratiton to be saved in the image. Local repo, plus remote repos deactivated.
 echo "[options]
@@ -63,6 +72,7 @@ echo "
 Note: Remote repositories core and extra are disabled. You can enable them back up by editing '/etc/pacman.conf'." >> $ROOT_DIR/etc/motd
 
 mkdir -p $ROOT_DIR/{root/,home/$NORMAL_USER_USERNAME/}
+cat main-repository-packages aur-packages > user-directory-payloads/package-list-additions
 cp -r {package-list-additions,user-directory-payloads} $ROOT_DIR/{root/,home/$NORMAL_USER_USERNAME/}
 
 # Disable autologin
@@ -77,12 +87,6 @@ echo "$NORMAL_USER_USERNAME:x:1000:1000::/home/$NORMAL_USER_USERNAME:/usr/bin/$N
 echo "$NORMAL_USER_USERNAME:$NORMAL_USER_PASSWORD:14871::::::" >> $ROOT_DIR/etc/shadow
 mkdir $ROOT_DIR/etc/sudoers.d
 echo "$NORMAL_USER_USERNAME ALL=(ALL:ALL) ALL" > $ROOT_DIR/etc/sudoers.d/01_normaluser
-
-echo "Begin compiling auxiliary package database"
-rm local-package-repository/local-package-repository*
-
-# Fish does not support this type of wildcard
-bash -c "repo-add local-package-repository/local-package-repository.db.tar.zst local-package-repository/*[^sig]"
 
 echo "Creating working and output directories"
 mkdir -p workdir out
