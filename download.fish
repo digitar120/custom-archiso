@@ -59,9 +59,9 @@ sudo -u $AUR_HELPER_USER aur sync --pacman-conf $PACMAN_CONFIGURATION_FILE $(cat
 # Debería usar un cat entre paquetes main y paquetes aur
 pacman -Syw --config $PACMAN_CONFIGURATION_FILE --noconfirm --cachedir $DOWNLOAD_DIRECTORY/packages --dbpath $DOWNLOAD_DIRECTORY/database $(cat main-repository-packages aur-packages)
 
-rm $DOWNLOAD_DIRECTORY/packages/local-repository-*
+rm $DOWNLOAD_DIRECTORY/packages/local-package-repository*
 
 echo "Begin compiling package database"
 
 # Fish does not support this kind of wildcard
-bash -c "repo-add $DOWNLOAD_DIRECTORY/packages/local-repository-$EXECUTE_DATE.db.tar.zst $DOWNLOAD_DIRECTORY/packages/*[^sig]"
+bash -c "repo-add $DOWNLOAD_DIRECTORY/packages/local-package-repository.db.tar.zst $DOWNLOAD_DIRECTORY/packages/*[^sig]"

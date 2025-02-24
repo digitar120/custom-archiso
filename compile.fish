@@ -9,7 +9,7 @@ set ROOT_PASSWORD (echo $argv[1] | openssl passwd -6 -stdin)
 set NORMAL_USER_USERNAME $argv[2]
 set NORMAL_USER_PASSWORD (echo $argv[3] | openssl passwd -6 -stdin)
 set NORMAL_USER_SHELL $argv[4]
-set PACKAGE_DATABASE_PATH "/custom-archiso-packages"
+set PACKAGE_WORKING_DIRECTORY "/custom-archiso-packages"
 
 echo "Clearing working directories"
 rm -rf workdir archlive 
@@ -30,7 +30,7 @@ if not test -d /custom-archiso-packages
     exit
 end
 
-cp -r $PACKAGE_DATABASE_PATH/* $ROOT_DIR/local-package-repository
+cp -r $PACKAGE_WORKING_DIRECTORY/packages/* $ROOT_DIR/local-package-repository
 
 # Pacman configuratiton to be saved in the image. Local repo, plus remote repos deactivated.
 echo "[options]
@@ -63,13 +63,11 @@ LocalFileSigLevel = Optional
 
 [local-package-repository]
 SigLevel = Optional TrustAll
-Server = file:///root/custom-archiso/local-package-repository/" > archlive/pacman.conf
+Server = file://$PACKAGE_WORKING_DIRECTORY/packages" > archlive/pacman.conf
 
 cat package-list-additions >> archlive/packages.x86_64
 
-echo "
-
-Note: Remote repositories core and extra are disabled. You can enable them back up by editing '/etc/pacman.conf'." >> $ROOT_DIR/etc/motd
+echo "\n\nNote: Remote repositories core and extra are disabled. You can enable them back up by editing '/etc/pacman.conf'." >> $ROOT_DIR/etc/motd
 
 mkdir -p $ROOT_DIR/{root/,home/$NORMAL_USER_USERNAME/}
 cat main-repository-packages aur-packages > user-directory-payloads/package-list-additions
