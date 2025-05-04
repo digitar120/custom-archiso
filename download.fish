@@ -50,7 +50,7 @@ Include = /etc/pacman.d/mirrorlist
 SigLevel = Optional TrustAll
 Server = file://$DOWNLOAD_DIRECTORY/aur-packages/" > $PACMAN_CONFIGURATION_FILE
 
-chown $USER_AND_GROUP aurutils-pacman.conf
+chown $USER_AND_GROUP $PACMAN_CONFIGURATION_FILE
 
 
 # Descarga de paquetes AUR según un archivo
