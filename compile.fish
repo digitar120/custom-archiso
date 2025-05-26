@@ -15,6 +15,7 @@ set NORMAL_USER_SHELL $argv[4]
 set PACKAGE_WORKING_DIRECTORY "/custom-archiso-packages"
 
 
+
 # Context setup
 echo "Clearing working directories"
 rm -rf workdir archlive 
@@ -28,8 +29,8 @@ cp -r airootfs-additions/* $ROOT_DIR
 
 mkdir -p $ROOT_DIR/local-package-repository
 
-## Test if the database directory exists
 
+## Test if the database directory exists
 if not test -d /custom-archiso-packages
     echo "Package directory does not exist. Run download.fish first."    
     exit
@@ -37,7 +38,10 @@ end
 
 cp -r $PACKAGE_WORKING_DIRECTORY/packages/* $ROOT_DIR/local-package-repository
 
-# Pacman configuratiton to be saved in the bootable image. Local repo, plus remote repos deactivated.
+
+
+# Pacman configuration
+## Config file to be saved in the bootable image. Local repo, plus remote repos deactivated.
 echo "[options]
 HoldPkg     = pacman glibc
 Architecture = auto
@@ -74,6 +78,9 @@ cat package-list-additions >> archlive/packages.x86_64
 
 echo "\n\nNote: Remote repositories core and extra are disabled. You can enable them back up by editing '/etc/pacman.conf'." >> $ROOT_DIR/etc/motd
 
+
+
+# ISO home directories setup
 ## Create home directories, and copy files intended for those.
 mkdir -p $ROOT_DIR/{root/,home/$NORMAL_USER_USERNAME/}
 cat main-repository-packages aur-packages > user-directory-payloads/package-list-additions
