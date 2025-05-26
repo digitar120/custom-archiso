@@ -71,6 +71,7 @@ modemmanager
 mtools
 nano
 nbd
+ncdu
 ndisc6
 nfs-utils
 nilfs-utils
