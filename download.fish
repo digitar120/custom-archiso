@@ -1,17 +1,24 @@
 #!/bin/fish
+# Package download helper script, meant to be executed before compile.sh. Downloads main repo and AUR packages that will be made available for immediate use on the image, and also copied as a database so as to be able to perform offline installs.
 
+
+
+# Variable setup
 set AUR_HELPER_USER $argv[1]
 set EXECUTE_DATE $(date +%Y-%m-%d_%H-%M)
 set DOWNLOAD_DIRECTORY "/custom-archiso-packages"
 
+
+
+# Configuration test
 if test -d $argv; or contains -- -h $argv[1]
-    echo -e "You need to specify an user with which to execute the aur helper, as it should not be executed with priviledges.\n\n"
+    echo -e "You need to specify an user from this running install with which to execute the aur helper, as it should not be executed with priviledges.\n\n"
     exit
 end
 
 
-# Folder setup
 
+## Folder setup
 echo $EXECUTE_DATE > $DOWNLOAD_DIRECTORY/execute-date.log
 
 mkdir -p $DOWNLOAD_DIRECTORY
@@ -30,6 +37,10 @@ chmod -R 700 $DOWNLOAD_DIRECTORY
 mkdir -p $DOWNLOAD_DIRECTORY/aur-packages
 repo-add $DOWNLOAD_DIRECTORY/aur-packages/aur-packages.db.tar.zst
 
+
+
+
+# Pacman configuration
 # Echo a pacman configuration for use with aurutils
 set PACMAN_CONFIGURATION_FILE "$DOWNLOAD_DIRECTORY/aurutils-pacman.conf"
 
@@ -53,12 +64,19 @@ Server = file://$DOWNLOAD_DIRECTORY/aur-packages/" > $PACMAN_CONFIGURATION_FILE
 chown $USER_AND_GROUP $PACMAN_CONFIGURATION_FILE
 
 
-# Descarga de paquetes AUR según un archivo
+
+# AUR package download.
+## Requires a Curses file manager like vifm or Ranger
 sudo -u $AUR_HELPER_USER aur sync --pacman-conf $PACMAN_CONFIGURATION_FILE $(cat aur-packages)
 
-# Debería usar un cat entre paquetes main y paquetes aur
+
+
+# Package download into the database directory
 pacman -Syw --config $PACMAN_CONFIGURATION_FILE --noconfirm --cachedir $DOWNLOAD_DIRECTORY/packages --dbpath $DOWNLOAD_DIRECTORY/database $(cat main-repository-packages aur-packages)
 
+
+
+# Package database cleanup and compilation
 rm $DOWNLOAD_DIRECTORY/packages/local-package-repository*
 
 echo "Begin compiling package database"

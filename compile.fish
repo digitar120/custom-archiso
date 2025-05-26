@@ -1,16 +1,21 @@
 #!/bin/fish
+# Main script, meant to be executed after download.fish, which downloads all packages.
 
 if not set -q argv[4]; or contains -- -h $argv[1]
     echo -e "Notes:\n\n- This script should be executed in a private fish session, (\"fish --private\"), which avoids storing sensitive information in the history file.\nYou can also remove specific history entries with \"history delete --contains <string>\".\n\n- If the build fails, use findmnt(8) to check if there are mount binds (see https://wiki.archlinux.org/title/Archiso#Removal_of_work_directory).\n\nUsage: compile.fish <root password> <non-root username> <non-root password> <non-root shell name>"
     exit
 end
 
+
+# Variable setup
 set ROOT_PASSWORD (echo $argv[1] | openssl passwd -6 -stdin)
 set NORMAL_USER_USERNAME $argv[2]
 set NORMAL_USER_PASSWORD (echo $argv[3] | openssl passwd -6 -stdin)
 set NORMAL_USER_SHELL $argv[4]
 set PACKAGE_WORKING_DIRECTORY "/custom-archiso-packages"
 
+
+# Context setup
 echo "Clearing working directories"
 rm -rf workdir archlive 
 
@@ -23,7 +28,7 @@ cp -r airootfs-additions/* $ROOT_DIR
 
 mkdir -p $ROOT_DIR/local-package-repository
 
-# Test if the database directory exists
+## Test if the database directory exists
 
 if not test -d /custom-archiso-packages
     echo "Package directory does not exist. Run download.fish first."    
@@ -32,7 +37,7 @@ end
 
 cp -r $PACKAGE_WORKING_DIRECTORY/packages/* $ROOT_DIR/local-package-repository
 
-# Pacman configuratiton to be saved in the image. Local repo, plus remote repos deactivated.
+# Pacman configuratiton to be saved in the bootable image. Local repo, plus remote repos deactivated.
 echo "[options]
 HoldPkg     = pacman glibc
 Architecture = auto
@@ -53,7 +58,7 @@ SigLevel = Optional TrustAll
 Server = file:///local-package-repository/" > $ROOT_DIR/etc/pacman.conf
 
 
-# Pacman configuration to be used by mkarchiso
+## Pacman configuration to be used by this program, and mkrachiso
 echo "[options]
 HoldPkg     = pacman glibc
 Architecture = auto
@@ -69,11 +74,15 @@ cat package-list-additions >> archlive/packages.x86_64
 
 echo "\n\nNote: Remote repositories core and extra are disabled. You can enable them back up by editing '/etc/pacman.conf'." >> $ROOT_DIR/etc/motd
 
+## Create home directories, and copy files intended for those.
 mkdir -p $ROOT_DIR/{root/,home/$NORMAL_USER_USERNAME/}
 cat main-repository-packages aur-packages > user-directory-payloads/package-list-additions
 cp -r {package-list-additions,user-directory-payloads} $ROOT_DIR/{root/,home/$NORMAL_USER_USERNAME/}
 
-# Disable autologin
+
+
+# User configuration
+## Disable autologin
 rm $ROOT_DIR/etc/systemd/system/getty@tty1.service.d/autologin.conf
 
 echo "Writing user data"
@@ -89,6 +98,9 @@ echo "$NORMAL_USER_USERNAME ALL=(ALL:ALL) ALL" > $ROOT_DIR/etc/sudoers.d/01_norm
 echo "Creating working and output directories"
 mkdir -p workdir out
 
+
+
+# Execution
 mkarchiso \
 	-v \
 	-L CUSTOM-ARCHISO \
