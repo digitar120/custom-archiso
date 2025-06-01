@@ -84,3 +84,7 @@ echo "Begin compiling package database"
 
 # Fish does not support this kind of wildcard
 bash -c "repo-add $DOWNLOAD_DIRECTORY/packages/local-package-repository.db.tar.zst $DOWNLOAD_DIRECTORY/packages/*[^sig]"
+
+## Automatically clear older package versions. Should not be needed, but adding anyway for testing.
+paccache -rk1 $DOWNLOAD_DIRECTORY/{packages,aur-packages}
+
