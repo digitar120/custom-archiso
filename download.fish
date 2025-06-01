@@ -5,6 +5,7 @@
 
 # Variable setup
 set AUR_HELPER_USER $argv[1]
+set AUR_PAGER "ranger"
 set EXECUTE_DATE $(date +%Y-%m-%d_%H-%M)
 set DOWNLOAD_DIRECTORY "/custom-archiso-packages"
 
@@ -67,8 +68,8 @@ chown $USER_AND_GROUP $PACMAN_CONFIGURATION_FILE
 
 # AUR package download.
 ## Requires a Curses file manager like vifm or Ranger
-sudo -u $AUR_HELPER_USER aur sync --pacman-conf $PACMAN_CONFIGURATION_FILE $(cat aur-packages)
-
+## Pager variable transported manually. --preserve-env for sudo fails to transport correctly.
+sudo -u $AUR_HELPER_USER AUR_PAGER=$AUR_PAGER aur sync --pacman-conf $PACMAN_CONFIGURATION_FILE $(cat aur-packages)
 
 
 # Package download into the database directory
