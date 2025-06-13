@@ -1,4 +1,15 @@
 #!/bin/fish
+
+## Alternative to bash's -e option, which automatically terminates the script if any section fails.
+function try
+  if ! $argv
+    echo "ERROR ($argv)"
+    exit 1
+  end
+end
+
+
+
 # Main script, meant to be executed after download.fish, which downloads all packages.
 
 if not set -q argv[4]; or contains -- -h $argv[1]
@@ -21,7 +32,7 @@ echo "Clearing working directories"
 rm -rf workdir archlive 
 
 echo "Copying base archiso profile"
-cp -r /usr/share/archiso/configs/releng/ archlive
+try cp -r /usr/share/archiso/configs/releng/ archlive
 
 echo "Applying custom changes"
 set ROOT_DIR archlive/airootfs
@@ -36,7 +47,7 @@ if not test -d /custom-archiso-packages
     exit
 end
 
-cp -r $PACKAGE_WORKING_DIRECTORY/packages/* $ROOT_DIR/local-package-repository
+try cp -r $PACKAGE_WORKING_DIRECTORY/packages/* $ROOT_DIR/local-package-repository
 
 
 
