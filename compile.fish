@@ -85,7 +85,7 @@ LocalFileSigLevel = Optional
 SigLevel = Optional TrustAll
 Server = file://$PACKAGE_WORKING_DIRECTORY/packages" > archlive/pacman.conf
 
-cat package-list-additions >> archlive/packages.x86_64
+cat main-repository-packages aur-packages >> archlive/packages.x86_64
 
 echo "\n\nNote: Remote repositories core and extra are disabled. You can enable them back up by editing '/etc/pacman.conf'." >> $ROOT_DIR/etc/motd
 
@@ -95,8 +95,10 @@ echo "\n\nNote: Remote repositories core and extra are disabled. You can enable 
 ## Create home directories, and copy files intended for those.
 mkdir -p $ROOT_DIR/{root/,home/$NORMAL_USER_USERNAME/}
 cat main-repository-packages aur-packages > user-directory-payloads/package-list-additions
-cp -r {package-list-additions,user-directory-payloads} $ROOT_DIR/{root/,home/$NORMAL_USER_USERNAME/}
 
+for i in $ROOT_DIR/{root,home/$NORMAL_USER_USERNAME}/
+    cp -r user-directory-payloads/* $i/
+end
 
 
 # User configuration
