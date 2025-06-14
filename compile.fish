@@ -87,7 +87,7 @@ Server = file://$PACKAGE_WORKING_DIRECTORY/packages" > archlive/pacman.conf
 
 cat main-repository-packages aur-packages >> archlive/packages.x86_64
 
-echo "\n\nNote: Remote repositories core and extra are disabled. You can enable them back up by editing '/etc/pacman.conf'." >> $ROOT_DIR/etc/motd
+printf "\n\nNote: Remote repositories core and extra are disabled. You can enable them back up by editing '/etc/pacman.conf'.\n\n" >> $ROOT_DIR/etc/motd
 
 
 
@@ -127,3 +127,4 @@ mkarchiso \
 	-A CUSTOM-ARCHISO \
 	-P digitar120 \
 	-w workdir/ -o out/ archlive/
+
