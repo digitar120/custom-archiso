@@ -33,6 +33,11 @@ rm -rf workdir archlive
 
 echo "Copying base archiso profile"
 try cp -r /usr/share/archiso/configs/releng/ archlive
+## Set image filename details
+sed -i 's/^iso_name=.*/iso_name="Ulysses"/' archlive/profiledef.sh
+sed -i 's/^iso_label=.*/iso_label="ULYSSES_$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y%m)"/' archlive/profiledef.sh
+sed -i 's|^iso_publisher=.*|iso_publisher="Gabriel Pérez <https://github.com/digitar120>"|' archlive/profiledef.sh
+sed -i 's/^iso_application=.*/iso_application="Ulysses Custom Arch Linux Live Media"/' archlive/profiledef.sh
 
 echo "Applying custom changes"
 set ROOT_DIR archlive/airootfs
