@@ -193,3 +193,4 @@ cmocka
 nasm
 check
 archlinux-keyring
+gnome-keyring
